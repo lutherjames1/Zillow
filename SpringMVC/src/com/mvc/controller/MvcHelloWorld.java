@@ -41,7 +41,8 @@ public class MvcHelloWorld {
 		RestTemplate myRestTemplate = new RestTemplate();
 		String url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=X1-ZWz1biibk0l3ij_88dza&address=" + myAddress;
 		
-		Address zpid = myRestTemplate.getForObject(url, Address.class);
+		String zpid = myRestTemplate.getForObject(url, String.class);
+		System.out.println("zip is" + zpid);
 		
 		return new ModelAndView("Address" , "zpid" , zpid);
 		
