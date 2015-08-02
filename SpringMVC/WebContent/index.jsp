@@ -15,8 +15,11 @@ body {
 		</h2>
 		<h3>
 		<form action="Address">
-	    Address:<br>
+	    Street Address:<br>
 		<input type="text" name="myAddress">
+		<br>
+		City and Zip:<br>
+		<input type="text" name="cityZip">
 		<br>
 		<input type="submit" value="Submit">
 		</form>

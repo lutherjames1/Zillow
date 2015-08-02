@@ -33,13 +33,17 @@ public class MvcHelloWorld {
 	
 	
 	@RequestMapping("/Address")
-	public ModelAndView getAddress(@RequestParam String myAddress){
+	public ModelAndView getAddress(@RequestParam String myAddress , @RequestParam String cityZip){
 		
 		System.out.println("Insode Zillow COntroller");
 		
+		/*myAddress.replace(" ", "+");
+		cityZip.replace(" ", "+");*/
 		
 		RestTemplate myRestTemplate = new RestTemplate();
-		String url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=X1-ZWz1biibk0l3ij_88dza&address=" + myAddress;
+		String url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=X1-ZWz1biibk0l3ij_88dza&address=" + myAddress + "&citystatezip=" +cityZip ;
+		
+		System.out.println(" URL is " + url);
 		
 		String zpid = myRestTemplate.getForObject(url, String.class);
 		System.out.println("zip is" + zpid);
