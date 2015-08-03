@@ -1,8 +1,10 @@
 package com.mvc.controller;
 
-
 import java.awt.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,49 +14,59 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mvc.model.Address;
 
-
 @Controller
 public class MvcHelloWorld {
 
 	/**
 	 * @param args
 	 */
-	
+
 	@RequestMapping("/welcome")
-   public ModelAndView helloWorld() {
-		
+	public ModelAndView helloWorld() {
+
 		System.out.println("control inside controller");
-		String message =  "<br><div style='text-align:center;'>"
+		String message = "<br><div style='text-align:center;'>"
 				+ "<h3>********** Hello World, Spring MVC Tutorial</h3>This message is coming from CrunchifyHelloWorld.java **********</div><br><br>";
-		return new ModelAndView("welcome" , "message" , message);
-		
-		
+		return new ModelAndView("welcome", "message", message);
+
 	}
-	
-	
+
 	@RequestMapping("/Address")
-	public ModelAndView getAddress(@RequestParam String myAddress , @RequestParam String cityZip){
-		
-		System.out.println("Insode Zillow COntroller");
-		
-		/*myAddress.replace(" ", "+");
-		cityZip.replace(" ", "+");*/
-		
+	public ModelAndView getAddress(@RequestParam String myAddress,
+			@RequestParam String cityZip) {
+
 		RestTemplate myRestTemplate = new RestTemplate();
-		String url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=X1-ZWz1biibk0l3ij_88dza&address=" + myAddress + "&citystatezip=" +cityZip ;
-		
-		System.out.println(" URL is " + url);
-		
+		String url = "http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=X1-ZWz1biibk0l3ij_88dza&address="
+				+ myAddress + "&citystatezip=" + cityZip;
+		int PRETTY_PRINT_INDENT_FACTOR = 4;
+
+		// Making the REST call
 		String zpid = myRestTemplate.getForObject(url, String.class);
-		System.out.println("zip is" + zpid);
 		
-		return new ModelAndView("Address" , "zpid" , zpid);
-		
-		
+		String jsonPrettyPrintString = null;
+		JSONObject xmlJSONObj = null;
+		String Zestimate = null;
+
+		// Convert String to JSON
+		try {
+
+			xmlJSONObj = XML.toJSONObject(zpid);
+			 jsonPrettyPrintString = xmlJSONObj
+					.toString(PRETTY_PRINT_INDENT_FACTOR);
+			System.out.println(jsonPrettyPrintString);
+			
+			Zestimate = xmlJSONObj.getJSONObject("SearchResults:searchresults").getJSONObject("message").getString("text");
+			
+			System.out.println(" Zestimate is " + Zestimate);
+			
+			
+		} catch (JSONException je) {
+
+			System.out.println("Json Exceptoin thrown" + je.toString());
+		}
+
+		return new ModelAndView("Address", "zpid", Zestimate);
+
 	}
-	
-	
-	
-	
 
 }
