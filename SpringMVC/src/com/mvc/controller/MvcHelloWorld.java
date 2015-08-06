@@ -1,6 +1,7 @@
 package com.mvc.controller;
 
 import java.awt.List;
+import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,9 +44,12 @@ public class MvcHelloWorld {
 		// Making the REST call
 		String zpid = myRestTemplate.getForObject(url, String.class);
 		
+		HashMap<String,String> values = new HashMap<String,String>();
+		
 		String jsonPrettyPrintString = null;
 		JSONObject xmlJSONObj = null;
-		String Zestimate = null;
+		String Latitude = null;
+		String Longitude = null;
 
 		// Convert String to JSON
 		try {
@@ -55,9 +59,12 @@ public class MvcHelloWorld {
 					.toString(PRETTY_PRINT_INDENT_FACTOR);
 			System.out.println(jsonPrettyPrintString);
 			
-			Zestimate = xmlJSONObj.getJSONObject("SearchResults:searchresults").getJSONObject("message").getString("text");
+			Latitude = xmlJSONObj.getJSONObject("SearchResults:searchresults").getJSONObject("response").getJSONObject("results").getJSONObject("result").getJSONObject("address").getString("latitude");
+			Longitude = xmlJSONObj.getJSONObject("SearchResults:searchresults").getJSONObject("response").getJSONObject("results").getJSONObject("result").getJSONObject("address").getString("longitude");
+			//System.out.println(" Zestimate is " + Latitude);
 			
-			System.out.println(" Zestimate is " + Zestimate);
+			values.put("Latitude", Latitude);
+			values.put("Longitude", Longitude);
 			
 			
 		} catch (JSONException je) {
@@ -65,7 +72,8 @@ public class MvcHelloWorld {
 			System.out.println("Json Exceptoin thrown" + je.toString());
 		}
 
-		return new ModelAndView("Address", "zpid", Zestimate);
+		return new ModelAndView("Address", "values", values);
+		
 
 	}
 
